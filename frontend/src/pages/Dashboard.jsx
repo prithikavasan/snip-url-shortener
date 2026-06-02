@@ -35,7 +35,7 @@ function Dashboard() {
     setLoading(true);
 
     const res = await axios.get(
-      "http://localhost:5000/api/url/my-urls",
+      "https://snip-url-shortener-f8zm.onrender.com/api/url/my-urls",
       tokenHeader()
     );
 
@@ -55,7 +55,7 @@ function Dashboard() {
       }
 
       const res = await axios.post(
-        "http://localhost:5000/api/url/create",
+        "https://snip-url-shortener-f8zm.onrender.com/api/url/create",
         { originalUrl, customAlias, expiresAt },
         tokenHeader()
       );
@@ -71,7 +71,7 @@ function Dashboard() {
   };
 
   const copyUrl = async (shortCode) => {
-    const shortUrl = `http://localhost:5000/api/url/${shortCode}`;
+    const shortUrl = `https://snip-url-shortener-f8zm.onrender.com/api/url/${shortCode}`;
     await navigator.clipboard.writeText(shortUrl);
 
     setCopiedCode(shortCode);
@@ -87,7 +87,7 @@ function Dashboard() {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/url/${url._id}`,
+        `https://snip-url-shortener-f8zm.onrender.com/api/url/${url._id}`,
         { originalUrl: newUrl },
         tokenHeader()
       );
@@ -102,7 +102,7 @@ function Dashboard() {
   const confirmDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/url/${deleteId}`,
+        `https://snip-url-shortener-f8zm.onrender.com/api/url/${deleteId}`,
         tokenHeader()
       );
 
@@ -125,7 +125,7 @@ function Dashboard() {
       formData.append("file", csvFile);
 
       const res = await axios.post(
-        "http://localhost:5000/api/url/bulk",
+        "https://snip-url-shortener-f8zm.onrender.com/api/url/bulk",
         formData,
         {
           headers: {
@@ -322,7 +322,7 @@ if (loading) {
             </div>
           ) : (
             filteredUrls.map((url) => {
-              const shortUrl = `http://localhost:5000/api/url/${url.shortCode}`;
+              const shortUrl = `http://:5000/api/url/${url.shortCode}`;
 
               return (
                 <div className="link-row" key={url._id}>

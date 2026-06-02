@@ -31,7 +31,7 @@ function Login() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://snip-url-shortener-f8zm.onrender.com/api/auth/login",
         form
       );
 
@@ -49,7 +49,7 @@ function Login() {
       const googleUser = result.user;
 
       const res = await axios.post(
-        "http://localhost:5000/api/auth/google-login",
+        "https://snip-url-shortener-f8zm.onrender.com/api/auth/google-login",
         {
           name: googleUser.displayName,
           email: googleUser.email
@@ -74,7 +74,7 @@ function Login() {
     setForgotLoading(true);
 
     const res = await axios.post(
-      "http://localhost:5000/api/auth/forgot-password",
+      "https://snip-url-shortener-f8zm.onrender.com/api/auth/forgot-password",
       {
         email: form.email
       }

@@ -26,7 +26,7 @@ function Analytics() {
       const token = localStorage.getItem("token");
 
       const res = await axios.get(
-        `http://localhost:5000/api/url/analytics/${id}`,
+        `https://snip-url-shortener-f8zm.onrender.com/api/url/analytics/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -69,7 +69,7 @@ function Analytics() {
   if (!data) {
   return <Loader text="Loading analytics..." />;
 }
-  const shortUrl = `http://localhost:5000/api/url/${data.shortCode}`;
+  const shortUrl = `https://snip-url-shortener-f8zm.onrender.com/api/url/${data.shortCode}`;
 
   return (
     <div className="analytics-page">

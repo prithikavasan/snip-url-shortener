@@ -15,7 +15,7 @@ function ResetPassword() {
 
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/auth/reset-password/${token}`,
+        `https://snip-url-shortener-f8zm.onrender.com/api/auth/reset-password/${token}`,
         { password }
       );
 

@@ -14,7 +14,7 @@ function PublicStats() {
   const fetchStats = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/url/public/${shortCode}`
+        `https://snip-url-shortener-f8zm.onrender.com/api/url/public/${shortCode}`
       );
 
       setData(res.data);

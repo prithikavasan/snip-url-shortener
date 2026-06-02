@@ -28,7 +28,7 @@ function Signup() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/signup",
+        "https://snip-url-shortener-f8zm.onrender.com/api/auth/signup",
         form
       );
 
@@ -50,7 +50,7 @@ function Signup() {
       const googleUser = result.user;
 
       const res = await axios.post(
-        "http://localhost:5000/api/auth/google-login",
+        "https://snip-url-shortener-f8zm.onrender.com/api/auth/google-login",
         {
           name: googleUser.displayName,
           email: googleUser.email
