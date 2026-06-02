@@ -322,7 +322,7 @@ if (loading) {
             </div>
           ) : (
             filteredUrls.map((url) => {
-              const shortUrl = `http://:5000/api/url/${url.shortCode}`;
+              const shortUrl = `https://snip-url-shortener-f8zm.onrender.com/api/url/${url.shortCode}`;
 
               return (
                 <div className="link-row" key={url._id}>
