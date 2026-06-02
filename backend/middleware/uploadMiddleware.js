@@ -1,4 +1,9 @@
 const multer = require("multer");
+const fs = require("fs");
+
+if (!fs.existsSync("uploads")) {
+    fs.mkdirSync("uploads");
+}
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -10,8 +15,4 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({
-    storage: storage
-});
-
-module.exports = upload;
+module.exports = multer({ storage });
