@@ -16,6 +16,31 @@ function Signup() {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
+  const passwordRules = [
+    {
+      label: "At least 8 characters",
+      valid: form.password.length >= 8
+    },
+    {
+      label: "One uppercase letter",
+      valid: /[A-Z]/.test(form.password)
+    },
+    {
+      label: "One lowercase letter",
+      valid: /[a-z]/.test(form.password)
+    },
+    {
+      label: "One number",
+      valid: /[0-9]/.test(form.password)
+    },
+    {
+      label: "One special symbol",
+      valid: /[!@#$%^&*(),.?":{}|<>]/.test(form.password)
+    }
+  ];
+
+  const isPasswordStrong = passwordRules.every((rule) => rule.valid);
+
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -25,6 +50,11 @@ function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isPasswordStrong) {
+      setMessage("Please create a stronger password.");
+      return;
+    }
 
     try {
       const res = await axios.post(
@@ -37,7 +67,6 @@ function Signup() {
       setTimeout(() => {
         navigate("/login");
       }, 800);
-
     } catch (error) {
       setMessage(error.response?.data?.message || "Signup failed");
     }
@@ -46,7 +75,6 @@ function Signup() {
   const handleGoogleSignup = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-
       const googleUser = result.user;
 
       const res = await axios.post(
@@ -59,7 +87,6 @@ function Signup() {
 
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
-
     } catch (error) {
       setMessage("Google signup failed");
     }
@@ -127,7 +154,40 @@ function Signup() {
           onChange={handleChange}
         />
 
-        <button type="submit" className="auth-submit">
+        <div className="password-box">
+          <div className="password-top">
+            <span>Password strength</span>
+            <b className={isPasswordStrong ? "strong-text" : "weak-text"}>
+              {isPasswordStrong ? "Strong" : "Weak"}
+            </b>
+          </div>
+
+          <div className="strength-bar">
+            <div
+              className="strength-fill"
+              style={{
+                width: `${
+                  (passwordRules.filter((rule) => rule.valid).length / 5) * 100
+                }%`
+              }}
+            ></div>
+          </div>
+
+          <ul className="password-rules">
+            {passwordRules.map((rule, index) => (
+              <li key={index} className={rule.valid ? "rule-valid" : "rule-invalid"}>
+                <span>{rule.valid ? "✓" : "×"}</span>
+                {rule.label}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <button
+          type="submit"
+          className="auth-submit"
+          disabled={!isPasswordStrong}
+        >
           Create Account
         </button>
       </form>
