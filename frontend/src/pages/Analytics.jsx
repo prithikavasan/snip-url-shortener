@@ -17,9 +17,16 @@ function Analytics() {
   const { id } = useParams();
   const [data, setData] = useState(null);
 
-  useEffect(() => {
-    fetchAnalytics();
-  }, []);
+ useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    window.location.href = "/login";
+    return;
+  }
+
+  fetchAnalytics();
+}, []);
 
   const fetchAnalytics = async () => {
     try {

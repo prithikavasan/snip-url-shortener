@@ -224,37 +224,36 @@ const updateUrl = async (req, res) => {
 };
 
 const getPublicStats = async (req, res) => {
-    try {
-        const { shortCode } = req.params;
+  try {
+    const { shortCode } = req.params;
 
-        const url = await Url.findOne({ shortCode });
+    const url = await Url.findOne({ shortCode });
 
-        if (!url) {
-            return res.status(404).json({
-                message: "URL not found"
-            });
-        }
-
-        const visits = await Visit.find({ url: url._id })
-            .sort({ visitedAt: -1 })
-            .limit(10);
-
-        res.json({
-            originalUrl: url.originalUrl,
-            shortCode: url.shortCode,
-            totalClicks: url.clicks,
-            createdAt: url.createdAt,
-            lastVisited: visits.length > 0 ? visits[0].visitedAt : null,
-            recentVisits: visits
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            message: error.message
-        });
+    if (!url) {
+      return res.status(404).json({
+        message: "URL not found"
+      });
     }
-};
 
+    const visits = await Visit.find({ url: url._id });
+
+    res.json({
+      originalUrl: url.originalUrl,
+      shortCode: url.shortCode,
+      totalClicks: url.clicks,
+      createdAt: url.createdAt,
+      lastVisited:
+        visits.length > 0
+          ? visits[visits.length - 1].visitedAt
+          : null
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};
 const bulkCreateUrls = async (req, res) => {
     try {
         const results = [];

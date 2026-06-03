@@ -23,8 +23,15 @@ function Dashboard() {
   const [uploadingCsv, setUploadingCsv] = useState(false);
 
   useEffect(() => {
-    fetchUrls();
-  }, []);
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    navigate("/login");
+    return;
+  }
+
+  fetchUrls();
+}, []);
 
   const tokenHeader = () => ({
     headers: {
