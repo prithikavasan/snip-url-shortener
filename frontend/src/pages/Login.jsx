@@ -16,6 +16,7 @@ function Login() {
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [forgotLoading, setForgotLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -43,26 +44,30 @@ function Login() {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const googleUser = result.user;
+ const handleGoogleLogin = async () => {
+  try {
+    setGoogleLoading(true);
+    setMessage("");
 
-      const res = await axios.post(
-        "https://snip-url-shortener-f8zm.onrender.com/api/auth/google-login",
-        {
-          name: googleUser.displayName,
-          email: googleUser.email
-        }
-      );
+    const result = await signInWithPopup(auth, provider);
+    const googleUser = result.user;
 
-      localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
+    const res = await axios.post(
+      "https://snip-url-shortener-f8zm.onrender.com/api/auth/google-login",
+      {
+        name: googleUser.displayName,
+        email: googleUser.email
+      }
+    );
 
-    } catch (error) {
-      setMessage("Google login failed");
-    }
-  };
+    localStorage.setItem("token", res.data.token);
+    navigate("/dashboard");
+
+  } catch (error) {
+    setMessage("Google login failed");
+    setGoogleLoading(false);
+  }
+};
 
  const handleForgotPassword = async () => {
   try {
@@ -199,6 +204,16 @@ function Login() {
     <div className="forgot-loader"></div>
   </div>
 )}
+{googleLoading && (
+  <div className="google-loading-overlay">
+    <div className="google-loading-box">
+      <div className="forgot-loader"></div>
+      <h3>Signing you in</h3>
+      <p>Please wait while Snip opens your dashboard.</p>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

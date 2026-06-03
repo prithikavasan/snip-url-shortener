@@ -1,18 +1,19 @@
+
 .loader-page {
-  min-height: 100vh;
-  background:
-    radial-gradient(circle at top left, rgba(198, 93, 59, 0.14), transparent 32%),
-    radial-gradient(circle at bottom right, rgba(255, 179, 138, 0.22), transparent 34%),
-    linear-gradient(135deg, #FAF6F0, #F7E7D8 55%, #FFFDF9);
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  background: rgba(255, 253, 249, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-family: Inter, Arial, sans-serif;
-  padding: 24px;
+  animation: fadeIn 0.2s ease;
 }
-
 .loader-content {
   text-align: center;
 }
@@ -61,4 +62,28 @@
 .loader-content p {
   color: #8A6F63;
   font-size: 15px;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+.loader-content {
+  animation: popUp 0.25s ease;
+}
+
+@keyframes popUp {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

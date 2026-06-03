@@ -12,7 +12,8 @@ function Signup() {
     email: "",
     password: ""
   });
-
+const [signupLoading, setSignupLoading] = useState(false);
+const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
@@ -49,28 +50,34 @@ function Signup() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!isPasswordStrong) {
-      setMessage("Please create a stronger password.");
-      return;
-    }
+  if (!isPasswordStrong) {
+    setMessage("Please create a stronger password.");
+    return;
+  }
 
-    try {
-      const res = await axios.post(
-        "https://snip-url-shortener-f8zm.onrender.com/api/auth/signup",
-        form
-      );
+  try {
+    setSignupLoading(true);
+    setMessage("");
 
-      setMessage(res.data.message);
+    const res = await axios.post(
+      "https://snip-url-shortener-f8zm.onrender.com/api/auth/signup",
+      form
+    );
 
-      setTimeout(() => {
-        navigate("/login");
-      }, 800);
-    } catch (error) {
-      setMessage(error.response?.data?.message || "Signup failed");
-    }
-  };
+    localStorage.setItem("token", res.data.token);
+    setShowSuccessModal(true);
+
+    setTimeout(() => {
+      navigate("/dashboard");
+    }, 1500);
+
+  } catch (error) {
+    setMessage(error.response?.data?.message || "Signup failed");
+    setSignupLoading(false);
+  }
+};
 
   const handleGoogleSignup = async () => {
     try {
@@ -164,13 +171,16 @@ function Signup() {
 
           <div className="strength-bar">
             <div
-              className="strength-fill"
-              style={{
-                width: `${
-                  (passwordRules.filter((rule) => rule.valid).length / 5) * 100
-                }%`
-              }}
-            ></div>
+  className="strength-fill"
+  style={{
+    width: `${
+      (passwordRules.filter((rule) => rule.valid).length / 5) * 100
+    }%`,
+    background: isPasswordStrong
+      ? "#16A34A"
+      : "linear-gradient(90deg, #D94835, #E07A5F, #C65D3B)"
+  }}
+></div>
           </div>
 
           <ul className="password-rules">
@@ -183,14 +193,24 @@ function Signup() {
           </ul>
         </div>
 
-        <button
-          type="submit"
-          className="auth-submit"
-          disabled={!isPasswordStrong}
-        >
-          Create Account
-        </button>
+       <button
+  type="submit"
+  className="auth-submit"
+  disabled={!isPasswordStrong || signupLoading}
+>
+  {signupLoading ? "Creating account..." : "Create Account"}
+</button>
       </form>
+      {showSuccessModal && (
+  <div className="signup-success-overlay">
+    <div className="signup-success-modal">
+      <div className="signup-success-icon">✓</div>
+      <h2>Account Created</h2>
+      <p>Your Snip account has been created successfully.</p>
+      <span>Opening your dashboard...</span>
+    </div>
+  </div>
+)}
     </div>
   );
 }
