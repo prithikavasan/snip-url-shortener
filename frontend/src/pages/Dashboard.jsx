@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
+import { FiTrash2 } from "react-icons/fi";
 import Loader from "../components/Loader";
 import axios from "axios";
 import "./Dashboard.css";
@@ -32,21 +33,21 @@ function Dashboard() {
   });
 
   const fetchUrls = async () => {
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const res = await axios.get(
-      "https://snip-url-shortener-f8zm.onrender.com/api/url/my-urls",
-      tokenHeader()
-    );
+      const res = await axios.get(
+        "https://snip-url-shortener-f8zm.onrender.com/api/url/my-urls",
+        tokenHeader()
+      );
 
-    setUrls(res.data);
-  } catch (error) {
-    console.log(error);
-  } finally {
-    setLoading(false);
-  }
-};
+      setUrls(res.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const createUrl = async () => {
     try {
@@ -116,37 +117,37 @@ function Dashboard() {
   };
 
   const uploadCSV = async () => {
-  try {
-    if (!csvFile) {
-      setMessage("Please select a CSV file");
-      return;
-    }
-
-    setUploadingCsv(true);
-
-    const formData = new FormData();
-    formData.append("file", csvFile);
-
-    const res = await axios.post(
-      "https://snip-url-shortener-f8zm.onrender.com/api/url/bulk",
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "multipart/form-data",
-        },
+    try {
+      if (!csvFile) {
+        setMessage("Please select a CSV file");
+        return;
       }
-    );
 
-    setMessage(`${res.data.count} URLs created successfully`);
-    setCsvFile(null);
-    fetchUrls();
-  } catch (error) {
-    setMessage(error.response?.data?.message || "CSV upload failed");
-  } finally {
-    setUploadingCsv(false);
-  }
-};
+      setUploadingCsv(true);
+
+      const formData = new FormData();
+      formData.append("file", csvFile);
+
+      const res = await axios.post(
+        "https://snip-url-shortener-f8zm.onrender.com/api/url/bulk",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setMessage(`${res.data.count} URLs created successfully`);
+      setCsvFile(null);
+      fetchUrls();
+    } catch (error) {
+      setMessage(error.response?.data?.message || "CSV upload failed");
+    } finally {
+      setUploadingCsv(false);
+    }
+  };
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -176,18 +177,21 @@ function Dashboard() {
     navigate("/login");
   };
 
- const filteredUrls = urls.filter((url) => {
-  const text = searchText.trim().toLowerCase();
+  const filteredUrls = urls.filter((url) => {
+    const text = searchText.trim().toLowerCase();
 
-  const original = url.originalUrl?.toLowerCase() || "";
-  const short = url.shortCode?.toLowerCase() || "";
+    const original = url.originalUrl?.toLowerCase() || "";
+    const short = url.shortCode?.toLowerCase() || "";
 
-  return original.includes(text) || short.includes(text);
-});
+    return original.includes(text) || short.includes(text);
+  });
 
-if (loading) {
-  return <Loader text="Loading your dashboard..." />;
-}
+  const isSearching = searchText.trim().length > 0;
+
+  if (loading) {
+    return <Loader text="Loading your dashboard..." />;
+  }
+
   return (
     <div className="dashboard-page">
       <nav className="navbar">
@@ -212,7 +216,6 @@ if (loading) {
           </div>
 
           <div className="hero-search">
-           
             <div className="search-box">
               <span>⌕</span>
               <input
@@ -222,101 +225,122 @@ if (loading) {
                 onChange={(e) => setSearchText(e.target.value)}
               />
             </div>
-          
           </div>
         </section>
 
-        <section className="create-card">
-          <div className="input-group">
-            <label>Long URL</label>
-            <input
-              type="text"
-              placeholder="https://example.com/very/long/path"
-              value={originalUrl}
-              onChange={(e) => setOriginalUrl(e.target.value)}
-            />
-          </div>
+        {!isSearching && (
+          <>
+            <section className="create-card">
+              <div className="input-group">
+                <label>Long URL</label>
+                <input
+                  type="text"
+                  placeholder="https://example.com/very/long/path"
+                  value={originalUrl}
+                  onChange={(e) => setOriginalUrl(e.target.value)}
+                />
+              </div>
 
-          <div className="input-group">
-            <label>
-              Custom alias <span>optional</span>
-            </label>
-            <input
-              type="text"
-              placeholder="my-link"
-              value={customAlias}
-              onChange={(e) => setCustomAlias(e.target.value)}
-            />
-          </div>
+              <div className="input-group">
+                <label>
+                  Custom alias <span>optional</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="my-link"
+                  value={customAlias}
+                  onChange={(e) => setCustomAlias(e.target.value)}
+                />
+              </div>
 
-          <div className="input-group">
-            <label>
-              Expiry date <span>optional</span>
-            </label>
-            <input
-              type="date"
-              value={expiresAt}
-              onChange={(e) => setExpiresAt(e.target.value)}
-            />
-          </div>
+              <div className="input-group">
+                <label>
+                  Expiry date <span>optional</span>
+                </label>
+                <input
+                  type="date"
+                  value={expiresAt}
+                  onChange={(e) => setExpiresAt(e.target.value)}
+                />
+              </div>
 
-          <button className="shorten-btn" onClick={createUrl}>
-            Shorten URL
-          </button>
-        </section>
+              <button className="shorten-btn" onClick={createUrl}>
+                Shorten URL
+              </button>
+            </section>
 
-         {message && (
-          <div className="toast">
-            <span>{message}</span>
-            <button onClick={() => setMessage("")}>×</button>
-          </div>
+            {message && (
+              <div className="toast">
+                <span>{message}</span>
+                <button onClick={() => setMessage("")}>×</button>
+              </div>
+            )}
+
+            <section className="csv-card">
+              <div className="csv-info">
+                <p className="eyebrow">Bulk upload</p>
+                <h3>Shorten URLs from CSV</h3>
+                <p>
+                  Upload a CSV file with a column named <b>url</b>.
+                </p>
+              </div>
+
+              <label
+                htmlFor="csvUpload"
+                className={dragActive ? "custom-upload active" : "custom-upload"}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDragActive(true);
+                }}
+                onDragLeave={() => setDragActive(false)}
+                onDrop={handleDrop}
+              >
+                <div className="upload-icon">↑</div>
+
+                <div className="upload-content">
+                  <h4>{csvFile ? csvFile.name : "Choose or drop CSV"}</h4>
+                  <p>
+                    {csvFile
+                      ? "Ready to upload"
+                      : "Only .csv files are supported"}
+                  </p>
+                </div>
+
+                <input
+                  id="csvUpload"
+                  type="file"
+                  accept=".csv"
+                  onChange={(e) => setCsvFile(e.target.files[0])}
+                  hidden
+                />
+              </label>
+
+              <button
+                className={`csv-upload-btn ${uploadingCsv ? "uploading" : ""}`}
+                onClick={uploadCSV}
+                disabled={uploadingCsv}
+              >
+                {uploadingCsv ? "Uploading..." : "Upload CSV"}
+              </button>
+            </section>
+          </>
         )}
 
-        <section className="csv-card">
-          <div className="csv-info">
-            <p className="eyebrow">Bulk upload</p>
-            <h3>Shorten URLs from CSV</h3>
-            <p>
-              Upload a CSV file with a column named <b>url</b>.
-            </p>
-          </div>
-
-          <label
-            htmlFor="csvUpload"
-            className={dragActive ? "custom-upload active" : "custom-upload"}
-            onDragOver={(e) => {
-              e.preventDefault();
-              setDragActive(true);
-            }}
-            onDragLeave={() => setDragActive(false)}
-            onDrop={handleDrop}
-          >
-            <div className="upload-icon">↑</div>
-
-            <div className="upload-content">
-              <h4>{csvFile ? csvFile.name : "Choose or drop CSV"}</h4>
-              <p>{csvFile ? "Ready to upload" : "Only .csv files are supported"}</p>
+        {isSearching && (
+          <div className="search-result-header">
+            <div>
+              <p className="eyebrow">Search results</p>
+              <h2>Matching links</h2>
             </div>
 
-            <input
-              id="csvUpload"
-              type="file"
-              accept=".csv"
-              onChange={(e) => setCsvFile(e.target.files[0])}
-              hidden
-            />
-          </label>
-
-          <button
-  className={`csv-upload-btn ${uploadingCsv ? "uploading" : ""}`}
-  onClick={uploadCSV}
-  disabled={uploadingCsv}
->
-  {uploadingCsv ? "Uploading..." : "Upload CSV"}
-</button>
-        </section>
-
-       
+            <button
+              className="clear-search-btn"
+              onClick={() => setSearchText("")}
+            >
+              Clear search
+            </button>
+          </div>
+        )}
 
         <section className="links-card">
           {urls.length === 0 ? (
@@ -407,7 +431,7 @@ if (loading) {
                       onClick={() => setDeleteId(url._id)}
                       title="Delete"
                     >
-                      🗑
+                      <FiTrash2 />
                     </button>
                   </div>
                 </div>
