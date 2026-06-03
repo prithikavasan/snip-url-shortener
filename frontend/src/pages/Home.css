@@ -219,7 +219,9 @@
 }
 
 .preview-card {
-  width: 380px;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
   background: rgba(255, 253, 249, 0.9);
   border: 1px solid rgba(198, 93, 59, 0.16);
   border-radius: 28px;
@@ -491,9 +493,23 @@
     font-size: 16px;
   }
 
-  .preview-card {
-    width: 100%;
-  }
+ .preview-card {
+  width: 100%;
+  max-width: 100%;
+  padding: 22px;
+   margin: 0 auto;
+}
+.preview-stats {
+  gap: 8px;
+}
+
+.preview-stats strong {
+  font-size: 16px;
+}
+
+.preview-stats span {
+  font-size: 10px;
+}
 
   .platform-grid {
     grid-template-columns: 1fr;
