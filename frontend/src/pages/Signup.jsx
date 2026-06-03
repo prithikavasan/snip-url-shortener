@@ -201,13 +201,29 @@ const [showSuccessModal, setShowSuccessModal] = useState(false);
   {signupLoading ? "Creating account..." : "Create Account"}
 </button>
       </form>
-      {showSuccessModal && (
+      {googleLoading && (
+  <div className="google-loading-overlay">
+    <div className="simple-loader"></div>
+
+    <div className="loader-text">
+      Signing you in
+    </div>
+
+    <div className="loader-subtext">
+      Opening your dashboard...
+    </div>
+  </div>
+)}
+    {showSuccessModal && (
   <div className="signup-success-overlay">
-    <div className="signup-success-modal">
-      <div className="signup-success-icon">✓</div>
-      <h2>Account Created</h2>
-      <p>Your Snip account has been created successfully.</p>
-      <span>Opening your dashboard...</span>
+    <div className="simple-loader"></div>
+
+    <div className="loader-text">
+      Account created
+    </div>
+
+    <div className="loader-subtext">
+      Redirecting to dashboard...
     </div>
   </div>
 )}
