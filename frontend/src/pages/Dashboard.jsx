@@ -326,7 +326,7 @@ function Dashboard() {
           </>
         )}
 
-        {isSearching && (
+        {/* {isSearching && (
           <div className="search-result-header">
             <div>
               <p className="eyebrow">Search results</p>
@@ -340,7 +340,7 @@ function Dashboard() {
               Clear search
             </button>
           </div>
-        )}
+        )} */}
 
         <section className="links-card">
           {urls.length === 0 ? (
