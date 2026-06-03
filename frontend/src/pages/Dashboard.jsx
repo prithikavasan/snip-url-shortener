@@ -19,6 +19,7 @@ function Dashboard() {
   const [copiedCode, setCopiedCode] = useState("");
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(true);
+  const [uploadingCsv, setUploadingCsv] = useState(false);
 
   useEffect(() => {
     fetchUrls();
@@ -115,33 +116,37 @@ function Dashboard() {
   };
 
   const uploadCSV = async () => {
-    try {
-      if (!csvFile) {
-        setMessage("Please select a CSV file");
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("file", csvFile);
-
-      const res = await axios.post(
-        "https://snip-url-shortener-f8zm.onrender.com/api/url/bulk",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      setMessage(`${res.data.count} URLs created successfully`);
-      setCsvFile(null);
-      fetchUrls();
-    } catch (error) {
-      setMessage(error.response?.data?.message || "CSV upload failed");
+  try {
+    if (!csvFile) {
+      setMessage("Please select a CSV file");
+      return;
     }
-  };
+
+    setUploadingCsv(true);
+
+    const formData = new FormData();
+    formData.append("file", csvFile);
+
+    const res = await axios.post(
+      "https://snip-url-shortener-f8zm.onrender.com/api/url/bulk",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    setMessage(`${res.data.count} URLs created successfully`);
+    setCsvFile(null);
+    fetchUrls();
+  } catch (error) {
+    setMessage(error.response?.data?.message || "CSV upload failed");
+  } finally {
+    setUploadingCsv(false);
+  }
+};
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -302,9 +307,13 @@ if (loading) {
             />
           </label>
 
-          <button className="csv-upload-btn" onClick={uploadCSV}>
-            Upload CSV
-          </button>
+          <button
+  className={`csv-upload-btn ${uploadingCsv ? "uploading" : ""}`}
+  onClick={uploadCSV}
+  disabled={uploadingCsv}
+>
+  {uploadingCsv ? "Uploading..." : "Upload CSV"}
+</button>
         </section>
 
        
