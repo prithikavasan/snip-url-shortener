@@ -15,6 +15,7 @@ function Signup() {
 const [signupLoading, setSignupLoading] = useState(false);
 const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [message, setMessage] = useState("");
+  const [googleLoading, setGoogleLoading] = useState(false);
   const navigate = useNavigate();
 
   const passwordRules = [
@@ -80,24 +81,29 @@ const [showSuccessModal, setShowSuccessModal] = useState(false);
 };
 
   const handleGoogleSignup = async () => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const googleUser = result.user;
+  try {
+    setGoogleLoading(true);
 
-      const res = await axios.post(
-        "https://snip-url-shortener-f8zm.onrender.com/api/auth/google-login",
-        {
-          name: googleUser.displayName,
-          email: googleUser.email
-        }
-      );
+    const result = await signInWithPopup(auth, provider);
+    const googleUser = result.user;
 
-      localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
-    } catch (error) {
-      setMessage("Google signup failed");
-    }
-  };
+    const res = await axios.post(
+      "https://snip-url-shortener-f8zm.onrender.com/api/auth/google-login",
+      {
+        name: googleUser.displayName,
+        email: googleUser.email
+      }
+    );
+
+    localStorage.setItem("token", res.data.token);
+
+    navigate("/dashboard");
+
+  } catch (error) {
+    setMessage("Google signup failed");
+    setGoogleLoading(false);
+  }
+};
 
   return (
     <div className="auth-page">
